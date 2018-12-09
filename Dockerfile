@@ -11,7 +11,7 @@ RUN apt-get update && \
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY koel-entrypoint /usr/local/bin/
 COPY koel-watch /usr/local/bin/
-RUN chmod +x /usr/local/bin/koel-entrypoint
+RUN chmod +x /usr/local/bin/koel-entrypoint /usr/local/bin/koel-watch
 
 ENTRYPOINT ["koel-entrypoint"]
 CMD ["/usr/bin/supervisord", "-n", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
