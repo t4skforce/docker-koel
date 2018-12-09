@@ -42,6 +42,4 @@ else
   echo "Error: web.php does not exist!"
 fi
 
-# Run the next entrypoint in the chain.
-echo "running docker-php-entrypoint with arguments $@"
-docker-php-entrypoint $@
+/usr/bin/supervisord
