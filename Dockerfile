@@ -14,3 +14,4 @@ COPY koel-watch /usr/local/bin/
 RUN chmod +x /usr/local/bin/koel-entrypoint
 
 ENTRYPOINT ["koel-entrypoint"]
+CMD ["/usr/bin/supervisord", "-n", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
