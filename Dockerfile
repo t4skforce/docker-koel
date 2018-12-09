@@ -6,8 +6,7 @@ ENV MEDIA_PATH=/music
 RUN apt-get update && \
   apt-get install --yes inotify-tools supervisor && \
   apt-get clean && \
-  mkdir -p /var/log/supervisor /var/www/html/storage/logs && \
-  touch /var/www/html/storage/logs/laravel.log
+  mkdir -p /var/log/supervisor
   
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY koel-entrypoint /usr/local/bin/
