@@ -1,0 +1,47 @@
+#!/bin/bash
+
+set -e
+
+# Setup ffmpeg path.
+export FFMPEG_PATH=$(which ffmpeg)
+
+# Change to program root directory.
+cd /var/www/html
+
+if [ ! -f .env ]
+then
+  echo ".env not present. bootstrapping..."
+
+  # For some reason key:generate (when called by koel:init or otherwise) doesn't
+  # update the .env file causing sessions to not work. This fixes the problem by
+  # generating and storing a key file.
+  echo "generating app key"
+  echo "APP_KEY=$(php artisan key:generate --show)" >> .env
+else
+  echo "environment file exists, skipping bootstrap"
+fi
+
+if [ -f ./routes/web.php ]; then
+  if [[ -z "${APP_HTTPS}" ]]; then
+    echo "using http support"
+    sed -i '/URL::forceScheme('"'"'https'"'"');/d' ./routes/web.php
+  else
+    echo "enabling https support"
+    grep -q -F 'URL::forceScheme('"'"'https'"'"');' ./routes/web.php || echo 'URL::forceScheme('"'"'https'"'"');' >> ./routes/web.php
+  fi
+
+  if [[ -z "${APP_URL}" ]]; then
+    echo "removing forced url if exists"
+    sed -i '/URL::forceRootUrl(.*);/d' ./routes/web.php
+  else
+    echo "enabling forced url"
+    sed -i '/URL::forceRootUrl(.*);/d' ./routes/web.php
+    echo 'URL::forceRootUrl('"'${APP_URL}'"');' >> ./routes/web.php
+  fi
+else
+  echo "Error: web.php does not exist!"
+fi
+
+# Run the next entrypoint in the chain.
+echo "running docker-php-entrypoint with arguments $@"
+docker-php-entrypoint $@
