@@ -1,5 +1,7 @@
 FROM 0xcaff/koel
 
+ARG BUILD_DATE=""
+
 ENV MEDIA_PATH=/music
 
 # Install dependencies.
